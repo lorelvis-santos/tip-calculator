@@ -1,9 +1,12 @@
 import { menuItems } from "./data/db"
 import MenuItem from "./components/MenuItem";
+import OrderContent from "./components/OrderContent";
+import OrderTotal from "./components/OrderTotal";
+import TipPercentageForm from "./components/TipPercentageForm";
 import useOrder from "./hooks/useOrder";
 
 function App() {
-  const { addItem } = useOrder();
+  const { order, addItem, removeItem, placeOrder, tip, setTip, isEmpty } = useOrder();
 
   return (
     <>
@@ -26,8 +29,25 @@ function App() {
           </ul>
         </div>
 
-        <div>
-          <h2 className="text-3xl font-black">Consumo</h2>
+        <div className="border border-slate-300 p-5 rounded-lg space-y-10 flex flex-col justify-between">
+          <OrderContent 
+            order={order}
+            removeItem={removeItem}
+          />
+
+          { isEmpty ? "" : (
+            <>
+              <TipPercentageForm
+                setTip={setTip}
+              />
+
+              <OrderTotal
+                order={order}
+                tip={tip}
+                placeOrder={placeOrder}
+              />
+            </>
+          )}
         </div>
       </main>
     </>
