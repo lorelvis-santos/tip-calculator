@@ -1,12 +1,15 @@
-import { menuItems } from "./data/db"
+import { useReducer, useMemo } from "react";
+import { menuItems } from "./data/db";
 import MenuItem from "./components/MenuItem";
 import OrderContent from "./components/OrderContent";
 import OrderTotal from "./components/OrderTotal";
 import TipPercentageForm from "./components/TipPercentageForm";
-import useOrder from "./hooks/useOrder";
+import { initialState, orderReducer } from "./reducers/order-reducer";
 
 function App() {
-  const { order, addItem, removeItem, placeOrder, tip, setTip, isEmpty } = useOrder();
+  const [state, dispatch] = useReducer(orderReducer, initialState);
+
+  const isEmpty = useMemo(() => state.order.length === 0, [state.order]);
 
   return (
     <>
@@ -23,7 +26,7 @@ function App() {
               <MenuItem
                 key={item.id}
                 item={item}
-                addItem={addItem}
+                dispatch={dispatch}
               />
             ))}
           </ul>
@@ -31,20 +34,20 @@ function App() {
 
         <div className="border border-slate-300 p-5 rounded-lg space-y-10 flex flex-col justify-between">
           <OrderContent 
-            order={order}
-            removeItem={removeItem}
+            order={state.order}
+            dispatch={dispatch}
           />
 
           { isEmpty ? "" : (
             <>
               <TipPercentageForm
-                setTip={setTip}
+                dispatch={dispatch}
               />
 
               <OrderTotal
-                order={order}
-                tip={tip}
-                placeOrder={placeOrder}
+                order={state.order}
+                tip={state.tip}
+                dispatch={dispatch}
               />
             </>
           )}

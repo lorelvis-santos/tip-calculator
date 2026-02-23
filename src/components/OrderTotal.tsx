@@ -1,14 +1,15 @@
 import { useMemo } from "react";
 import type { OrderItem } from "../types"
 import { formatCurrency } from "../helpers";
+import type { OrderActions } from "../reducers/order-reducer";
 
 type OrderTotalProps = {
   order: OrderItem[];
-  tip: number,
-  placeOrder: () => void;
+  tip: number;
+  dispatch: React.Dispatch<OrderActions>;
 }
 
-export default function OrderTotal({order, tip, placeOrder} : Readonly<OrderTotalProps>) {
+export default function OrderTotal({order, tip, dispatch} : Readonly<OrderTotalProps>) {
   const subTotalAmount = useMemo(
     () => order.reduce(
       // reduce: toma el total y va sumando el total de cada elemento. Inicia desde 0.
@@ -31,7 +32,7 @@ export default function OrderTotal({order, tip, placeOrder} : Readonly<OrderTota
       <button
         className="w-full py-2 bg-teal-300 rounded mt-8 font-black text-xl hover:cursor-pointer hover:bg-teal-400 disabled:opacity-10 transition-colors"
         disabled={totalAmount === 0}
-        onClick={placeOrder}
+        onClick={() => dispatch({type: "place-order"})}
       >
         Guardar orden
       </button>
